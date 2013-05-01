@@ -1,0 +1,27 @@
+{
+  "name": "mongoose-faucet",
+  "version": "0.0.0",
+  "description": "An easy way to process large document sets with mongoose.",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --compilers coffee:coffee-script",
+    "prepublish": "./node_modules/.bin/coffee --compile index.coffee"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/idottv/mongoose-faucet"
+  },
+  "keywords": [
+    "mongoose"
+  ],
+  "author": "Layne Moseley",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "~1.9.0",
+    "coffee-script": "~1.6.2",
+    "async":"0.2.8"
+  }, 
+  "dependencies": {
+    "mongoose": "3.6.8" 
+  }
+}
