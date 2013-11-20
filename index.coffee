@@ -6,7 +6,7 @@ module.exports = (model, query, itrFunc, options, cb) ->
     cb = options
     options = {}
 
-  options.snapshot ||= false
+  options.snapshot ||= true
   options.lean ||= false
 
   stream = model.find(query).snapshot(options.snapshot).lean(options.lean).stream()

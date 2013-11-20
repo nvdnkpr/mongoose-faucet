@@ -19,9 +19,9 @@ where
 `options` is an optional parameter hash that defines a few things, here are the defaults
 ```
 {
-  "concurrency" : 100, // the number of concurrent updates that can run
-  "snapshot": false, // run a snapshot query, this is often neccesary as iterating over a cursor can present the same document multiple times
-  "lean" : false // lean your mongoose documents
+  "concurrency" : 100, // Default: 100. The number of concurrent updates that can run
+  "snapshot": true, // Default: true. Run a snapshot query, this is often neccesary as iterating over a cursor can present the same document multiple times.
+  "lean" : false // Default: false. Lean your mongoose documents
 }
 
 ```
