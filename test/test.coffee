@@ -10,11 +10,12 @@ model = db.model 'faucet-test', testSchema
 describe 'mongoose-faucet', ->
 
   before (done) ->
-    model.collection.drop done
+    model.collection.drop ->
+      done()
 
   describe 'mongoose-faucet tests', ->
     it 'should stream items and iterate through them correctly', (done) ->
-    
+
       async.each [0..999], (i, cb) ->
         item = new model {i}
         item.save cb
@@ -22,12 +23,12 @@ describe 'mongoose-faucet', ->
 
         model.find({}).count (err, count) ->
           assert.equal count, 1000
-       
+
           numberProcessed = 0
           itr = (item, cb) ->
             numberProcessed++
             cb()
-          
+
           faucet model, {}, itr, {concurrency: 10}, (err) ->
             assert.ifError err
             assert.equal numberProcessed, 1000

@@ -1,9 +1,18 @@
-mongoose = require 'mongoose'
 async = require 'async'
 
 module.exports = (model, query, itrFunc, options, cb) ->
 
-  stream = model.find(query).stream()
+  if typeof options == "function"
+    cb = options
+    options = {}
+
+
+  q = model.find(query)
+
+  q.snapshot() if options.snapshot
+  q.lean() if options.lean
+
+  stream = q.stream()
 
   queue = async.queue itrFunc, options.concurrency or 100
 
@@ -12,7 +21,7 @@ module.exports = (model, query, itrFunc, options, cb) ->
 
   stream.on 'data', (doc) ->
     queue.push doc
-                            
+
   stream.on 'error', cb
 
   stream.on 'close', ->
