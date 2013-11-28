@@ -15,7 +15,7 @@ module.exports = (model, query, itrFunc, options, cb) ->
     batch = []
     addToBatch = (item, callback) ->
       batch.push item
-      if batch.length == options.batch
+      if batch.length is options.batch
         itrFunc batch, callback
         batch = []
       else
