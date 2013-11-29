@@ -11,7 +11,19 @@ module.exports = (model, query, itrFunc, options, cb) ->
 
   stream = model.find(query).snapshot(options.snapshot).lean(options.lean).stream()
 
-  queue = async.queue itrFunc, options.concurrency or 100
+  if options.batch
+    batch = []
+    addToBatch = (item, callback) ->
+      batch.push item
+      if batch.length is options.batch
+        completeBatch = batch
+        batch = []
+        itrFunc completeBatch, callback
+      else
+        callback()
+    queue = async.queue addToBatch, options.concurrency or 100
+  else
+    queue = async.queue itrFunc, options.concurrency or 100
 
   queue.saturated = -> stream.pause()
   queue.empty = -> stream.resume()
@@ -24,4 +36,7 @@ module.exports = (model, query, itrFunc, options, cb) ->
   stream.on 'close', ->
     stream.resume()
     queue.drain = ->
-      cb()
+      if options.batch and batch.length != 0
+        itrFunc batch, cb
+      else
+        cb()

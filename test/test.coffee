@@ -75,3 +75,32 @@ describe 'mongoose-faucet', ->
           assert.equal numProc, 501
           done()
 
+    it "should be able to return batches of items", (done) ->
+      numberProcessed = 0
+      itr = (items, cb) ->
+        assert.equal items.length, 100
+        numberProcessed += items.length
+        cb()
+
+      faucet model, {}, itr, {batch : 100}, (err) ->
+        assert.ifError err
+        assert.equal numberProcessed, 1000
+        done()
+
+    
+    it "should return the last items in the batch query even if it doesn't fill a full batch", (done) ->
+      numberProcessed = 0
+      itr = (items, cb) ->
+        if numberProcessed != 990
+          assert.equal items.length, 99
+          numberProcessed += items.length
+        else
+          assert.equal items.length, 10
+          numberProcessed += items.length
+        cb()
+
+      faucet model, {}, itr, {batch : 99}, (err) ->
+        assert.ifError err
+        assert.equal numberProcessed, 1000
+        done()
+    
