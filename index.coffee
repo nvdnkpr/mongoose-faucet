@@ -16,8 +16,9 @@ module.exports = (model, query, itrFunc, options, cb) ->
     addToBatch = (item, callback) ->
       batch.push item
       if batch.length is options.batch
-        itrFunc batch, callback
+        completeBatch = batch
         batch = []
+        itrFunc completeBatch, callback
       else
         callback()
     queue = async.queue addToBatch, options.concurrency or 100
@@ -35,7 +36,7 @@ module.exports = (model, query, itrFunc, options, cb) ->
   stream.on 'close', ->
     stream.resume()
     queue.drain = ->
-      if options.batch
+      if options.batch and batch.length != 0
         itrFunc batch, cb
       else
         cb()
