@@ -1,6 +1,6 @@
 {
   "name": "mongoose-faucet",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "An easy way to process large document sets with mongoose.",
   "main": "index.js",
   "scripts": {
