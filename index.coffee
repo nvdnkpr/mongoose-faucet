@@ -8,8 +8,9 @@ module.exports = (model, query, itrFunc, options, cb) ->
 
   options.snapshot ||= true
   options.lean ||= false
+  options.select ||= false
 
-  stream = model.find(query).snapshot(options.snapshot).lean(options.lean).stream()
+  stream = model.find(query).select(options.select).snapshot(options.snapshot).lean(options.lean).stream()
 
   if options.batch
     batch = []
@@ -35,8 +36,16 @@ module.exports = (model, query, itrFunc, options, cb) ->
 
   stream.on 'close', ->
     stream.resume()
-    queue.drain = ->
+
+    done = () ->
       if options.batch and batch.length != 0
-        itrFunc batch, cb
-      else
-        cb()
+          itrFunc batch, cb
+        else
+          cb()
+
+    if queue.idle()
+      return done()
+
+    queue.drain = ->
+      done()
+

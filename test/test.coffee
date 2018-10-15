@@ -48,6 +48,24 @@ describe 'mongoose-faucet', ->
         assert.ifError err
         done()
 
+    it "should work with to select method", (done) ->
+      itr = (item, cb) ->
+        assert.ok !item._id
+        cb()
+
+      faucet model, {i: {$gte: 499}}, itr, {select: {_id: 0}}, (err) ->
+        assert.ifError err
+        done()
+
+    it "should work with query res is none", (done) ->
+      itr = (item, cb) ->
+        cb()
+
+      faucet model, {i: {$lt: 0}}, itr, {select: {_id: 0}}, (err) ->
+        assert.ifError err
+        done()
+
+
     it "should be able to lean things up", (done) ->
       itr = (item, cb) ->
         assert.ok !(item instanceof model)
@@ -87,7 +105,7 @@ describe 'mongoose-faucet', ->
         assert.equal numberProcessed, 1000
         done()
 
-    
+
     it "should return the last items in the batch query even if it doesn't fill a full batch", (done) ->
       numberProcessed = 0
       itr = (items, cb) ->
@@ -103,4 +121,4 @@ describe 'mongoose-faucet', ->
         assert.ifError err
         assert.equal numberProcessed, 1000
         done()
-    
+
