@@ -57,6 +57,14 @@ describe 'mongoose-faucet', ->
         assert.ifError err
         done()
 
+    it "should work with query res is none", (done) ->
+      itr = (item, cb) ->
+        cb()
+
+      faucet model, {i: {$lt: 0}}, itr, {select: {_id: 0}}, (err) ->
+        assert.ifError err
+        done()
+
 
     it "should be able to lean things up", (done) ->
       itr = (item, cb) ->

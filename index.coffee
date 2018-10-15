@@ -36,8 +36,16 @@ module.exports = (model, query, itrFunc, options, cb) ->
 
   stream.on 'close', ->
     stream.resume()
-    queue.drain = ->
+
+    done = () ->
       if options.batch and batch.length != 0
-        itrFunc batch, cb
-      else
-        cb()
+          itrFunc batch, cb
+        else
+          cb()
+
+    if queue.idle()
+      return done()
+
+    queue.drain = ->
+      done()
+
